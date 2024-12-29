@@ -4,8 +4,6 @@
 
 @section('content')
     <style>
-
-
         .hero {
             background-image: url(https://placehold.co/1400x400/EEE/313438&text=Hero+Image);
             background-size: cover;
@@ -126,7 +124,7 @@
 
         .shop-item-img {
             width: 100%;
-            height: 250px;
+            height: 400px;
             object-fit: cover;
         }
 
@@ -163,33 +161,22 @@
             margin-left: 5px;
         }
 
-        .features {
-            background-color: #faf3ea;
-        }
-
         .feature {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-            back
+            text-align: center;
         }
 
-        .feature-icon {
+        .icon {
             font-size: 2rem;
-            color: #b88e2f;
-            margin-right: 20px;
+            margin-bottom: 10px;
         }
 
         .feature-text {
-            font-size: 0.9rem;
-            color: #555;
+            font-size: 1rem;
         }
 
-        .feature-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #222;
-            margin-bottom: 5px;
+        .feature-subtext {
+            color: gray;
+            font-size: 0.9rem;
         }
     </style>
 
@@ -207,8 +194,8 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="new-item">
-                        <img src="https://placehold.co/400x250/EEE/313438&text=Syltherine"
-                            alt="Syltherine - Stylish cafe chair" class="new-item-img">
+                        <img src="https://picsum.photos/id/1/400/250" alt="Syltherine - Stylish cafe chair"
+                            class="new-item-img">
                         <div class="new-item-badge">-30%</div>
                         <div class="new-item-overlay">
                             <button class="new-item-button">Add to cart</button>
@@ -224,7 +211,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="new-item">
-                        <img src="https://placehold.co/400x250/EEE/313438&text=Leviosa" alt="Leviosa - Stylish cafe chair"
+                        <img src="https://picsum.photos/id/22/400/250" alt="Leviosa - Stylish cafe chair"
                             class="new-item-img">
 
                         <div class="new-item-overlay">
@@ -241,8 +228,7 @@
                 </div>
                 <div class="col-md-3">
                     <div class="new-item">
-                        <img src="https://placehold.co/400x250/EEE/313438&text=Lolito" alt="Lolito - Luxury big sofa"
-                            class="new-item-img">
+                        <img src="https://picsum.photos/id/3/400/250" alt="Lolito - Luxury big sofa" class="new-item-img">
                         <div class="new-item-badge">-50%</div>
                         <div class="new-item-overlay">
                             <button class="new-item-button">Add to cart</button>
@@ -258,8 +244,8 @@
                 </div>
                 <div class="col-md-3">
                     <div class="new-item">
-                        <img src="https://placehold.co/400x250/EEE/313438&text=Respira"
-                            alt="Respira - Outdoor bar table and stool" class="new-item-img">
+                        <img src="https://picsum.photos/id/4/400/250" alt="Respira - Outdoor bar table and stool"
+                            class="new-item-img">
                         <div class="new-item-badge">New</div>
                         <div class="new-item-overlay">
                             <button class="new-item-button">Add to cart</button>
@@ -283,26 +269,22 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="shop-item">
-                        <img src="https://placehold.co/600x400/EEE/313438&text=Shop+Image+1" alt="Shop Image 1"
-                            class="shop-item-img">
+                        <img src="https://picsum.photos/id/1/400/400" alt="Shop Image 1" class="shop-item-img">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="shop-item">
-                        <img src="https://placehold.co/600x400/EEE/313438&text=Shop+Image+2" alt="Shop Image 2"
-                            class="shop-item-img">
+                        <img src="https://picsum.photos/id/2/400/400" alt="Shop Image 2" class="shop-item-img">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="shop-item">
-                        <img src="https://placehold.co/600x400/EEE/313438&text=Shop+Image+3" alt="Shop Image 3"
-                            class="shop-item-img">
+                        <img src="https://picsum.photos/id/3/400/400" alt="Shop Image 3" class="shop-item-img">
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="shop-item">
-                        <img src="https://placehold.co/600x400/EEE/313438&text=Shop+Image+4" alt="Shop Image 4"
-                            class="shop-item-img">
+                        <img src="https://picsum.photos/id/4/400/400" alt="Shop Image 4" class="shop-item-img">
                     </div>
                 </div>
             </div>
@@ -315,19 +297,7 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="blog-item">
-                        <img src="https://placehold.co/400x200/EEE/313438&text=Blog+Image+1" alt="Blog Image 1"
-                            class="blog-item-img">
-                        <h3 class="blog-item-title">THE ULTIMATE SOFA BUYING GUIDE</h3>
-                        <a href="#" class="blog-item-link">
-
-                            <i class="fas fa-arrow-right"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="blog-item">
-                        <img src="https://placehold.co/400x200/EEE/313438&text=Blog+Image+2" alt="Blog Image 2"
-                            class="blog-item-img">
+                        <img src="https://picsum.photos/id/2/400/200" alt="Blog Image 2" class="blog-item-img">
                         <h3 class="blog-item-title">A BEDROOM MUST HAVE SOME THING LIKE THIS</h3>
                         <p class="blog-item-text">Your level of comfort when geting into and out of bed can be greatly
                             influenced by the bed frame you choose. It may significantly affect how want your bedroom to
@@ -340,8 +310,20 @@
                 </div>
                 <div class="col-md-4">
                     <div class="blog-item">
-                        <img src="https://placehold.co/400x200/EEE/313438&text=Blog+Image+3" alt="Blog Image 3"
-                            class="blog-item-img">
+                        <img src="https://picsum.photos/id/2/400/200" alt="Blog Image 2" class="blog-item-img">
+                        <h3 class="blog-item-title">A BEDROOM MUST HAVE SOME THING LIKE THIS</h3>
+                        <p class="blog-item-text">Your level of comfort when geting into and out of bed can be greatly
+                            influenced by the bed frame you choose. It may significantly affect how want your bedroom to
+                            feet and look</p>
+                        <a href="#" class="blog-item-link">
+                            ABOUT
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="blog-item">
+                        <img src="https://picsum.photos/id/2/400/200" alt="Blog Image 3" class="blog-item-img">
                         <h3 class="blog-item-title">WHY IS A TV CONSOLE A MUST IN EVERY HOUSE</h3>
                         <p class="blog-item-text">People do a lot of research to make sure they purchase the ideal
                             televisoin. And like the rest of us, you want to keep that gorgeous flat srceen in your
@@ -356,48 +338,32 @@
         </div>
     </section>
 
-    <section class="features">
+    <div class="container-fluid py-5" style="background-color: #faf0e6;">
         <div class="container">
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="feature">
-                        <i class="fas fa-trophy feature-icon"></i>
-                        <div>
-                            <h4 class="feature-title">High Quality</h4>
-                            <p class="feature-text">crafted from top materials</p>
-                        </div>
-                    </div>
+            <div class="row text-center">
+                <div class="col-md-3 feature">
+                    <div class="icon">🏆</div>
+                    <h5 class="feature-text">High Quality</h5>
+                    <p class="feature-subtext">crafted from top materials</p>
                 </div>
-                <div class="col-md-3">
-                    <div class="feature">
-                        <i class="fas fa-check-circle feature-icon"></i>
-                        <div>
-                            <h4 class="feature-title">Warranty Protection</h4>
-                            <p class="feature-text">Over 2 years</p>
-                        </div>
-                    </div>
+                <div class="col-md-3 feature">
+                    <div class="icon">✅</div>
+                    <h5 class="feature-text">Warranty Protection</h5>
+                    <p class="feature-subtext">Over 2 years</p>
                 </div>
-                <div class="col-md-3">
-                    <div class="feature">
-                        <i class="fas fa-shipping-fast feature-icon"></i>
-                        <div>
-                            <h4 class="feature-title">Free Shipping</h4>
-                            <p class="feature-text">Order over 150 $</p>
-                        </div>
-                    </div>
+                <div class="col-md-3 feature">
+                    <div class="icon">📦</div>
+                    <h5 class="feature-text">Free Shipping</h5>
+                    <p class="feature-subtext">Order over 150 $</p>
                 </div>
-                <div class="col-md-3">
-                    <div class="feature">
-                        <i class="fas fa-headset feature-icon"></i>
-                        <div>
-                            <h4 class="feature-title">24 / 7 Support</h4>
-                            <p class="feature-text">Dedicated support</p>
-                        </div>
-                    </div>
+                <div class="col-md-3 feature">
+                    <div class="icon">🎧</div>
+                    <h5 class="feature-text">24 / 7 Support</h5>
+                    <p class="feature-subtext">Dedicated support</p>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
 
 

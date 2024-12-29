@@ -3,6 +3,9 @@
 @section('title', 'Home Page')
 
 @section('content')
+    @php
+        $currentPerPage = request('per_page', 16); // 16 là mặc định nếu không có giá trị
+    @endphp
     <style>
         .hero {
             background-image: url(https://placehold.co/1400x400/EEE/313438&text=Hero+Image);
@@ -34,14 +37,13 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.2);
         }
-        body {
-            background-color: #faf0e6;
-        }
+
         .filter-container {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
         }
+
         .filter-button {
             background-color: transparent;
             border: none;
@@ -49,39 +51,49 @@
             color: #000;
             cursor: pointer;
         }
+
         .filter-icon {
             margin-right: 10px;
             font-size: 1.5rem;
         }
+
         .view-options {
             margin-left: 10px;
         }
+
         .view-icon {
             font-size: 1.5rem;
             color: #000;
             margin-right: 5px;
             cursor: pointer;
         }
+
         .separator {
             margin: 0 10px;
             color: #777;
         }
+
         .results-info {
             font-size: 14px;
             color: #000;
             margin-left: auto;
         }
+
         .show-sort-container {
             display: flex;
             align-items: center;
             margin-left: auto;
         }
-        .show-label, .sort-label {
+
+        .show-label,
+        .sort-label {
             font-size: 14px;
             color: #000;
             margin-right: 10px;
         }
-        .show-input, .sort-input {
+
+        .show-input,
+        .sort-input {
             border: 1px solid #ccc;
             padding: 5px 10px;
             border-radius: 5px;
@@ -89,9 +101,12 @@
             color: #777;
             width: 80px;
         }
+
         .card {
             border: none;
             margin-bottom: 20px;
+            background-color: #f4f5f7;
+            position: relative;
         }
 
         .card-img-top {
@@ -144,11 +159,6 @@
             margin-left: 5px;
         }
 
-        .pagination {
-            margin-top: 20px;
-            justify-content: center;
-        }
-
         .page-link {
             color: #333;
             border: 1px solid #ccc;
@@ -164,6 +174,93 @@
             border-color: #c89f49;
             color: #fff;
         }
+
+        /* css filter */
+        .filter-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .filter-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .filter-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-outline-secondary {
+            border: 1px solid #ced4da;
+            color: #495057;
+        }
+
+        .btn-outline-secondary:hover {
+            background-color: #e9ecef;
+        }
+
+        .dropdown-toggle::after {
+            margin-left: 0.5em;
+            vertical-align: 0.15em;
+        }
+
+        .filter-options {
+            margin-top: 10px;
+            padding: 15px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        .feature {
+            text-align: center;
+        }
+
+        .icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .feature-text {
+            font-size: 1rem;
+        }
+
+        .feature-subtext {
+            color: gray;
+            font-size: 0.9rem;
+        }
+
+        .text-decoration-none {
+            text-decoration: none;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .card:hover .overlay {
+            opacity: 1;
+        }
+
+        .new-item-icons i {
+            color: #fff;
+            margin: 0 5px;
+        }
     </style>
     <section class="hero">
         <div class="hero-overlay"></div>
@@ -172,211 +269,258 @@
             <p class="hero-subtitle">Home</p>
         </div>
     </section>
-    <div class="container">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12 filter-container">
-                    <button class="filter-button">
-                        <i class="fas fa-filter filter-icon"></i>
-                        Filter
+    <div class="container-fluid" style="background-color: #faf0e6;">
+        <div class="container p-0">
+            <div class="filter-bar">
+                <div class="filter-left">
+                    <button class="btn btn-outline-secondary btn-sm me-2" id="filterButton">
+                        <i class="bi bi-filter"></i> Filter
                     </button>
-                    <div class="view-options">
-                        <i class="fas fa-th view-icon"></i>
-                        <i class="fas fa-list view-icon"></i>
+                    <button class="btn btn-outline-secondary btn-sm" id="gridButton">
+                        <i class="bi bi-grid" id="list-grid"></i>
+                    </button>
+                    <span class="ms-3">Showing 1–16 of 32 results</span>
+                </div>
+                <div class="filter-right">
+                    <span class="me-2">Show</span>
+                    <div class="dropdown me-2">
+                        <button class="btn btn-light dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            {{ $currentPerPage }}
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item"
+                                    href="{{ route('pages.shop', array_merge(request()->query(), ['per_page' => 8])) }}">8</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                    href="{{ route('pages.shop', array_merge(request()->query(), ['per_page' => 16])) }}">16</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                    href="{{ route('pages.shop', array_merge(request()->query(), ['per_page' => 32])) }}">32</a>
+                            </li>
+                        </ul>
                     </div>
-                    <span class="separator">|</span>
-                    <span class="results-info">Showing 1-16 of 32 results</span>
-                    <div class="show-sort-container">
-                        <span class="show-label">Show</span>
-                        <input type="text" class="show-input" value="16">
-                        <span class="sort-label">Sort by</span>
-                        <input type="text" class="sort-input" value="Default">
+                    <span class="me-2">Sort by</span>
+                    <div class="dropdown">
+                        <button class="btn btn-light dropdown-toggle btn-sm" type="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Default
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Popularity</a></li>
+                            <li><a class="dropdown-item" href="#">Newest</a></li>
+                            <li><a class="dropdown-item" href="#">Price: Low to High</a></li>
+                            <li><a class="dropdown-item" href="#">Price: High to Low</a></li>
+                        </ul>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-img-top">
-                        <img src="https://placehold.co/400x200"
-                            alt="Dining table with a white tabletop and four white stools, with a chandelier above, in a white room"
-                            class="card-img-top">
-                        <span class="discount-badge">-30%</span>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Syltherine</h5>
-                        <p class="card-text">Stylish cafe chair</p>
-                        <span class="price">2.500.000₫</span>
-                        <span class="original-price">3.500.000₫</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="https://placehold.co/400x200" alt="Stylish white chair with wooden legs" class="card-img-top">
-                    <div class="card-body">
-                        <h5 class="card-title">Leviosa</h5>
-                        <p class="card-text">Stylish cafe chair</p>
-                        <span class="price">2.500.000₫</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-img-top">
-                        <img src="https://placehold.co/400x200" alt="Luxury big grey sofa in a white-walled room"
-                            class="card-img-top">
-                        <span class="discount-badge">-50%</span>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Lolito</h5>
-                        <p class="card-text">Luxury big sofa</p>
-                        <span class="price">7.000.000₫</span>
-                        <span class="original-price">14.000.000₫</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-img-top">
-                        <img src="https://placehold.co/400x200"
-                            alt="Outdoor bar table and stool in a living room with white brick walls and wooden floor"
-                            class="card-img-top">
-                        <span class="new-badge">New</span>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Respira</h5>
-                        <p class="card-text">Outdoor bar table and stool</p>
-                        <span class="price">5.000.000₫</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-img-top">
-                        <img src="https://placehold.co/400x200"
-                            alt="Dining table with a white tabletop and four white stools, with a chandelier above, in a white room"
-                            class="card-img-top">
-                        <span class="discount-badge">-30%</span>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Syltherine</h5>
-                        <p class="card-text">Stylish cafe chair</p>
-                        <span class="price">2.500.000₫</span>
-                        <span class="original-price">3.500.000₫</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="https://placehold.co/400x200" alt="Stylish white chair with wooden legs" class="card-img-top">
-                    <div class="card-body">
-                        <h5 class="card-title">Leviosa</h5>
-                        <p class="card-text">Stylish cafe chair</p>
-                        <span class="price">2.500.000₫</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-img-top">
-                        <img src="https://placehold.co/400x200" alt="Luxury big grey sofa in a white-walled room"
-                            class="card-img-top">
-                        <span class="discount-badge">-50%</span>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Lolito</h5>
-                        <p class="card-text">Luxury big sofa</p>
-                        <span class="price">7.000.000₫</span>
-                        <span class="original-price">14.000.000₫</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-img-top">
-                        <img src="https://placehold.co/400x200"
-                            alt="Outdoor bar table and stool in a living room with white brick walls and wooden floor"
-                            class="card-img-top">
-                        <span class="new-badge">New</span>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Respira</h5>
-                        <p class="card-text">Outdoor bar table and stool</p>
-                        <span class="price">5.000.000₫</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-img-top">
-                        <img src="https://placehold.co/400x200"
-                            alt="Dining table with a white tabletop and four white stools, with a chandelier above, in a white room"
-                            class="card-img-top">
-                        <span class="discount-badge">-30%</span>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Syltherine</h5>
-                        <p class="card-text">Stylish cafe chair</p>
-                        <span class="price">2.500.000₫</span>
-                        <span class="original-price">3.500.000₫</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <img src="https://placehold.co/400x200" alt="Stylish white chair with wooden legs"
-                        class="card-img-top">
-                    <div class="card-body">
-                        <h5 class="card-title">Leviosa</h5>
-                        <p class="card-text">Stylish cafe chair</p>
-                        <span class="price">2.500.000₫</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-img-top">
-                        <img src="https://placehold.co/400x200" alt="Luxury big grey sofa in a white-walled room"
-                            class="card-img-top">
-                        <span class="discount-badge">-50%</span>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Lolito</h5>
-                        <p class="card-text">Luxury big sofa</p>
-                        <span class="price">7.000.000₫</span>
-                        <span class="original-price">14.000.000₫</span>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card">
-                    <div class="card-img-top">
-                        <img src="https://placehold.co/400x200"
-                            alt="Outdoor bar table and stool in a living room with white brick walls and wooden floor"
-                            class="card-img-top">
-                        <span class="new-badge">New</span>
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Respira</h5>
-                        <p class="card-text">Outdoor bar table and stool</p>
-                        <span class="price">5.000.000₫</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <nav aria-label="Page navigation">
-                    <ul class="pagination">
-                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item"><a class="page-link" href="#">2</a></li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item"><a class="page-link" href="#">Next</a></li>
-                    </ul>
-                </nav>
             </div>
         </div>
     </div>
+    <div class="filter-options container" id="filterOptions" style="display: none;">
+        <h5>Filter Options</h5>
+        <div class="mb-3">
+            <label for="categoryFilter" class="form-label">Category</label>
+            <select class="form-select" id="categoryFilter">
+                <option value="">All</option>
+                <option value="electronics">Electronics</option>
+                <option value="clothing">Clothing</option>
+            </select>
+        </div>
+        <button class="btn btn-primary btn-sm">Apply Filters</button>
+    </div>
+    <div class="mb-5"></div>
+    <div class="container">
+        @if ($products->isEmpty())
+            <div class="row">
+                <div class="col-12">
+                    <p class="text-center">No products available.</p>
+                </div>
+            </div>
+        @else
+            <div class="row">
+                @foreach ($products as $product)
+                    <div class="col-lg-3 col-md-4 mb-3 col-sm-6">
+                        <div class="card h-100">
+                            <div class="card-img-top img">
+                                <img src="{{ $product->image_url }}" alt="lỗi ảnh" class="card-img-top img">
+                                <span class="discount-badge">-30%</span>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title">{{ $product->name }}</h5>
+                                <p class="card-text flex-grow-1">{{ $product->description }}</p>
+                                <div>
+                                    <span class="price">{{ $product->sale_price }}₫</span>
+                                    <span class="original-price">{{ $product->price }}₫</span>
+                                </div>
+                            </div>
+                            <div class="overlay">
+                                <a href="{{ route('product.show', ['id' => $product->id]) }}"
+                                    class="btn btn-light mb-3">View</a>
+                                <div>
+                                    <a href="#" class="new-item-icons" onclick="openShareTab()"><i
+                                            class="fas fa-share-alt"></i></a>
+                                    <a href="#" class="new-item-icons"><i class="far fa-heart"></i></a>
+                                    <a href="cart/add/{{ $product->id }}" class="new-item-icons add-cart"
+                                        data-product-id="{{ $product->id }}"><i class="bi bi-cart"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+        {{-- <div class="row">
+            @foreach ($product as $product)
+                <div class="col-12 mb-3 grid-view">
+                    <a href="{{ route('product.show', ['id' => $product->id]) }}">
+                        <div class="card h-100 d-flex flex-row" id="card">
+                            <div class="card-img-left">
+                                <img src="{{ $product->image_url }}" alt="Hình ảnh sản phẩm {{ $product->name }}"
+                                    class="card-img-left">
+                                <span class="discount-badge">-30%</span>
+                            </div>
+                            <div class="card-body d-flex flex-column justify-content-between">
+                                <h5 class="card-title">{{ $product->name }}</h5>
+                                <p class="card-text flex-grow-1">{{ Str::limit($product->description, 120) }}</p>
+                                <div class="price-section">
+                                    <span class="price">{{ $product->sale_price }}₫</span>
+                                    <span class="original-price">{{ $product->price }}₫</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            @endforeach
+        </div>   --}}
+        <!-- Hiển thị phân trang -->
+        <div class="justify-content-center">
+            {{ $products->links('pagination::bootstrap-5') }}
+        </div>
+    </div>
+    <div class="container-fluid py-5" style="background-color: #faf0e6;">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 feature">
+                    <div class="icon">🏆</div>
+                    <h5 class="feature-text">High Quality</h5>
+                    <p class="feature-subtext">crafted from top materials</p>
+                </div>
+                <div class="col-md-3 feature">
+                    <div class="icon">✅</div>
+                    <h5 class="feature-text">Warranty Protection</h5>
+                    <p class="feature-subtext">Over 2 years</p>
+                </div>
+                <div class="col-md-3 feature">
+                    <div class="icon">📦</div>
+                    <h5 class="feature-text">Free Shipping</h5>
+                    <p class="feature-subtext">Order over 150 $</p>
+                </div>
+                <div class="col-md-3 feature">
+                    <div class="icon">🎧</div>
+                    <h5 class="feature-text">24 / 7 Support</h5>
+                    <p class="feature-subtext">Dedicated support</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const filterButton = document.getElementById('filterButton');
+        const filterOptions = document.getElementById('filterOptions');
+        const gridButton = document.getElementById('gridButton');
+        const gridView = document.getElementById('gridView');
+
+        filterButton.addEventListener('click', () => {
+            filterOptions.style.display = filterOptions.style.display === 'none' ? 'block' : 'none';
+        });
+        document.getElementById('gridButton').addEventListener('click', function() {
+            const toggleClasses = (elements, removeClasses, addClasses) => {
+                elements.forEach(element => {
+                    element.classList.remove(...removeClasses);
+                    element.classList.add(...addClasses);
+                });
+            };
+
+            const updateDescription = (elements) => {
+                elements.forEach(element => {
+                    const descriptionElement = element.querySelector('p.card-text');
+                    if (descriptionElement) {
+                        const description = descriptionElement.textContent;
+                        descriptionElement.textContent = description.length > 120 ? description
+                            .substring(0, 120) + '...' : description;
+                    }
+                });
+            };
+
+            if (document.querySelector('.col-lg-3')) {
+                toggleClasses(document.querySelectorAll('div.col-lg-3.col-md-4.mb-3.col-sm-6'), ['col-lg-3',
+                    'col-md-4', 'col-sm-6'
+                ], ['col-12', 'grid-view']);
+                toggleClasses(document.querySelectorAll('div.card.h-100'), [], ['d-flex', 'flex-row']);
+                toggleClasses(document.querySelectorAll('.card-img-top.img'), ['card-img-top', 'img'], [
+                    'card-img-left', 'h-100'
+                ]);
+                toggleClasses(document.querySelectorAll('div.card-body.d-flex.flex-column'), [], [
+                    'justify-content-between'
+                ]);
+                updateDescription(document.querySelectorAll('div.card-body.d-flex.flex-column'));
+                toggleClasses(document.querySelectorAll('div.card-body div'), [], ['price-section']);
+                document.getElementById('list-grid').classList.remove('bi-grid');
+                document.getElementById('list-grid').classList.add('bi-list-ul');
+            } else {
+                toggleClasses(document.querySelectorAll('div.col-12.grid-view'), ['col-12', 'grid-view'], [
+                    'col-lg-3', 'col-md-4', 'col-sm-6'
+                ]);
+                toggleClasses(document.querySelectorAll('div.card.h-100'), ['d-flex', 'flex-row'], []);
+                toggleClasses(document.querySelectorAll('.card-img-left'), ['card-img-left', 'h-100'], [
+                    'card-img-top',
+                    'img'
+                ]);
+                toggleClasses(document.querySelectorAll('div.card-body.d-flex.flex-column'), [
+                    'justify-content-between'
+                ], []);
+                updateDescription(document.querySelectorAll('div.card-body.d-flex.flex-column'));
+                toggleClasses(document.querySelectorAll('div.card-body div'), ['price-section'], []);
+                document.getElementById('list-grid').classList.remove('bi-list-ul');
+                document.getElementById('list-grid').classList.add('bi-grid');
+            }
+        });
+        document.querySelectorAll('.add-cart').forEach(icon => {
+            icon.addEventListener('click', function() {
+                const productId = this.dataset.productId;
+
+                fetch(`cart/add/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .getAttribute('content')
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Thêm vào giỏ hàng thành công');
+                        } else {
+                            alert(data.message);
+                        }
+                    });
+            });
+        });
+
+        function openShareTab() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Chia sẻ trang',
+                    text: 'Mời bạn chia sẻ trang này',
+                    url: window.location.href
+                }).then(() => {
+                    console.log('Chia sẻ thành công');
+                }).catch((error) => {
+                    console.log('Có lỗi xảy ra trong khi chia sẻ: ', error);
+                });
+            } else {
+                alert('Trình duyệt của bạn không hỗ trợ chia sẻ');
+            }
+        }
+    </script>
 @endsection

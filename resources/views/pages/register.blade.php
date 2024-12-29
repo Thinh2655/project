@@ -109,40 +109,32 @@
             align-items: center;
 
         }
-
-        .fixed-alert {
-            position: fixed;
-            top: 20px;
-            right: -300px;
-            /* Bắt đầu từ bên ngoài màn hình */
-            padding: 15px;
-            z-index: 1000;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            transition: right 0.5s ease;
-            /* Hiệu ứng chuyển động */
-        }
-
-        .show-alert {
-            right: 20px;
-            /* Di chuyển vào màn hình */
-        }
     </style>
 </head>
 
 <body>
     <div class="login-container">
         <div class="close-btn" onclick="window.history.back();">×</div>
-        <h2 class="login-title">Login</h2>
-        <form action="login" method="POST">
+        <h2 class="login-title">register</h2>
+        <form action="register" method="POST">
             @csrf
+            <div class="input-label">Username:</div>
+            <input type="text" name="name" class="input-field" placeholder="">
+            @error('username')
+                <span class="text-danger">{{ $message }}</span>
+            @enderror
             <div class="input-label">Email:</div>
             <input type="text" name="email" class="input-field" placeholder="">
-            @error('username')
+            @error('email')
                 <span class="text-danger">{{ $message }}</span>
             @enderror
             <div class="input-label">Password:</div>
             <input type="password" name="password" class="input-field" placeholder="">
+            @error('password')
+                <span class="text-danger">{{ $message }}</span><br>
+            @enderror
+            <div class="input-label">Password confirmation:</div>
+            <input type="password" name="password_confirmation" class="input-field" placeholder="">
             @error('password')
                 <span class="text-danger">{{ $message }}</span><br>
             @enderror
@@ -159,32 +151,9 @@
             </button>
         </div>
         <div class="mt-3 text-center">
-            <p>Don't have an account? <a href="register">Sign up</a></p>
+            <p>Already have an account? <a href="login">Sign in</a></p>
         </div>
-        @if (session('message'))
-            <div class="alert alert-warning fixed-alert" id="errorAlert">
-                {{ session('message') }}
-            </div>
-        @endif
     </div>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var alert = document.getElementById('errorAlert');
-            if (alert) {
-                // Thêm lớp để hiển thị thông báo
-                alert.classList.add('show-alert');
-
-                // Tự động ẩn sau 5 giây
-                setTimeout(function() {
-                    alert.classList.remove('show-alert');
-                    // Thêm hiệu ứng ẩn dần nếu cần
-                    setTimeout(function() {
-                        alert.style.display = 'none';
-                    }, 500);
-                }, 5000);
-            }
-        });
-    </script>
 </body>
 
 </html>
