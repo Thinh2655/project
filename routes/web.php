@@ -53,9 +53,8 @@ Route::get('product/{id}', [ProductController::class, 'show'])->name('product.sh
 
 Route::get('shop', [ProductController::class, 'search'])->name('pages.shop');
 
-Route::get('account', function () {
-    return view('pages.account');
-})->name('pages.account');
+Route::get('account', [HomeController::class, 'account'])->name('pages.account');
+Route::post('account', [HomeController::class, 'update'])->name('account.update');
 
 Route::get('admin', function () {
     return view('admin.dashboard');

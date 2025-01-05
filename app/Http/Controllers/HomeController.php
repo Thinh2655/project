@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\QueryException;
+use App\Models\User;
 
 class HomeController extends Controller
 {
@@ -100,7 +101,6 @@ class HomeController extends Controller
                 'password' => Hash::make($req->password),
             ]);
             return redirect()->back()->with('message', 'Đăng ký thành công');
-            
         } catch (QueryException $e) {
             // Xử lý lỗi nếu có khi thực hiện insert
             return redirect()->back()->with('error', 'Đã có lỗi xảy ra');
@@ -111,5 +111,43 @@ class HomeController extends Controller
 
         // Chuyển hướng về trang chủ
         return redirect('/');
+    }
+    public function account()
+    {
+        // Lấy thông tin người dùng hiện tại
+        $user = Auth::user();
+
+        // Lấy các đơn hàng của người dùng hiện tại
+        $orders = DB::table('orders')->where('user_id', $user->id)->get();
+
+        // Lấy thông tin các order_item và product cho từng đơn hàng
+        foreach ($orders as $order) {
+            $order->items = DB::table('order_items')
+            ->join('products', 'order_items.product_id', '=', 'products.id')
+            ->where('order_items.order_id', $order->id)
+            ->select('order_items.*', 'products.name as product_name', 'products.price as product_price')
+            ->get();
+        }
+
+        // Trả về view với thông tin người dùng và các đơn hàng
+        return view('pages.account', ['user' => $user, 'orders' => $orders]);
+    }
+    public function update(Request $request)
+    {
+        // Lấy user hiện tại bằng Eloquent
+        $user = User::find(Auth::id());
+
+        // Kiểm tra nếu user tồn tại
+        if ($user) {
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->phone_number = $request->phone;
+            $user->address = $request->address;
+
+            // Lưu thông tin mới
+            $user->save();
+        }
+
+        return redirect()->back()->with('message', 'Cập nhật thông tin thành công');
     }
 }
