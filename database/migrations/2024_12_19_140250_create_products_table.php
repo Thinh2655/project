@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('image_url', 255);
             $table->integer('category_id')->unsigned();
             $table->tinyInteger('status')->default(1);
+            $table->integer('like')->default(0);
             $table->timestamps();
             $table->foreign('category_id')->references('id')->on('categories');
         });

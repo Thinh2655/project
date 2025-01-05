@@ -51,11 +51,11 @@ class HomeController extends Controller
         // Nếu người dùng tồn tại và mật khẩu khớp
         if ($user && Hash::check($req->password, $user->password)) {
             Auth::loginUsingId($user->id); // Đăng nhập
-            return redirect()->back()->with('message', 'Đăng nhập thành công');
+            return redirect('home')->with('message', 'Đăng nhập thành công');
         }
 
         // Nếu không tìm thấy người dùng hoặc mật khẩu không đúng
-        return response()->json(['message' => 'Email hoặc mật khẩu không chính xác'], 401);
+        return redirect()->back()->with('error', 'Email hoặc mật khẩu không đúng');
     }
 
     public function check_register(Request $req)
@@ -85,7 +85,10 @@ class HomeController extends Controller
 
         // Nếu xác thực thất bại, trả về lỗi
         if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
+            return response()->json([
+                'message' => 'Lỗi khi đăng ký người dùng',
+                'errors' => $validator->errors()
+            ], 400); // Trả về mã lỗi 400 cho bad request
         }
 
         // Thử thực hiện thao tác insert và kiểm tra lỗi
@@ -96,23 +99,17 @@ class HomeController extends Controller
                 'email' => $req->email,
                 'password' => Hash::make($req->password),
             ]);
-
-            // Nếu thêm thành công, trả về phản hồi thành công
-            return response()->json([
-                'message' => 'Đăng ký thành công',
-                'user_id' => $userId
-            ], 201);
+            return redirect()->back()->with('message', 'Đăng ký thành công');
+            
         } catch (QueryException $e) {
             // Xử lý lỗi nếu có khi thực hiện insert
-            return response()->json([
-                'message' => 'Lỗi khi đăng ký người dùng',
-                'error' => $e->getMessage()
-            ], 500); // Trả về mã lỗi 500 cho server error
+            return redirect()->back()->with('error', 'Đã có lỗi xảy ra');
         }
 
         // Đăng nhập người dùng ngay sau khi đăng ký thành công
         Auth::loginUsingId($user->id);
 
-        return response()->json(['message' => 'Đăng ký thành công'], 201);
+        // Chuyển hướng về trang chủ
+        return redirect('/');
     }
 }

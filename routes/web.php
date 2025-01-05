@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
@@ -38,9 +39,8 @@ Route::get('/logout', function () {
 Route::get('register', [HomeController::class, 'register'])->name('pages.register');
 Route::post('register', [HomeController::class, 'check_register']);
 
-Route::get('payment', function () {
-    return view('pages.payment');
-});
+Route::post('checkout', [PaymentController::class, 'index'])->name('pages.checkout');
+Route::post('payment', [PaymentController::class, 'payment'])->name('pages.payment');
 
 Route::get('categories', [CategoryController::class, 'index'])->name('pages.category');
 
@@ -49,14 +49,13 @@ Route::post('/cart/update/{id}', [CartController::class, 'updateQuantity'])->nam
 Route::delete('/cart/delete/{id}', [CartController::class, 'delete'])->name('cart.delete');
 Route::get('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 
-
 Route::get('product/{id}', [ProductController::class, 'show'])->name('product.show');
 
 Route::get('shop', [ProductController::class, 'search'])->name('pages.shop');
 
 Route::get('account', function () {
     return view('pages.account');
-});
+})->name('pages.account');
 
 Route::get('admin', function () {
     return view('admin.dashboard');

@@ -78,7 +78,7 @@
             font-weight: 600;
         }
 
-        .cart-totals a {
+        .cart-totals button {
             display: block;
             background-color: #E7C985;
             color: #222;
@@ -89,6 +89,10 @@
             width: 100%;
             text-align: center;
             text-decoration: none;
+        }
+
+        .cart-totals button:hover {
+            background-color: #F7D6A3;
         }
 
         .features {
@@ -134,38 +138,50 @@
     <div class="container cart-table">
         <div class="row">
             <div class="col-md-7">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Product</th>
-                            <th scope="col">Price</th>
-                            <th scope="col">Quantity</th>
-                            <th scope="col">Subtotal</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @foreach ($cartItems as $item)
+                <form action="checkout" method="post" id="cart">
+                    @csrf
+                    @method('POST')
+                    <table class="table">
+                        <thead>
                             <tr>
-                                <td>
-                                    <img src="{{ $item->image_url }}"
-                                        alt="Image of a modern sofa with wooden legs and blue cushions" class="product-img">
-                                    {{ $item->product_name }}
-                                </td>
-                                <td>{{ number_format($item->price, 0, ',', '.') }}đ</td>
-                                <td>
-                                    <input type="number" class="form-control" value="{{ $item->quantity }}" min="1"
-                                        style="width: 70px;" data-product-id="{{ $item->id }}">
-                                </td>
-                                <td>{{ number_format($item->total_price, 0, ',', '.') }}đ</td>
-                                <td><i class="fas fa-trash text-danger" style="cursor: pointer;"
-                                        data-product-id="{{ $item->id }}"></i>
-                                </td>
+                                <th scope="col"></th>
+                                <th scope="col">Product</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Subtotal</th>
+                                <th></th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+
+                        <tbody>
+                            @foreach ($cartItems as $item)
+                                <tr class="text-center align-middle">
+                                    <td class="align-middle">
+                                        <input type="checkbox" name="products[]" value="{{ $item->product_id }}">
+                                    </td>
+                                    <td style="position: relative;">
+                                        <img src="{{ $item->image_url }}"
+                                            alt="Image of a modern sofa with wooden legs and blue cushions"
+                                            class="product-img">
+                                        {{ $item->product_name }}
+                                        <div class="position-absolute top-0 start-0" style="width: 100%; height: 100%;">
+                                        </div>
+                                    </td>
+                                    <td>{{ number_format($item->sale_price, 0, ',', '.') }}đ</td>
+                                    <td>
+                                        <input type="number" class="form-control" value="{{ $item->quantity }}"
+                                            min="1" style="width: 70px;" data-product-id="{{ $item->id }}">
+                                    </td>
+                                    <td>{{ number_format($item->total_price, 0, ',', '.') }}đ</td>
+                                    <td><i class="fas fa-trash text-danger" style="cursor: pointer;"
+                                            data-product-id="{{ $item->id }}"></i>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </form>
+
                 @if ($cartItems->isEmpty())
                     <div class="text-center my-5">
                         <p style="font-size: 18px; font-weight: 600;">Giỏ hàng của bạn đang trống.</p>
@@ -177,18 +193,24 @@
                 <div class="cart-totals">
                     <h3>Cart Totals</h3>
                     <div class="total-item">
-                        <span>Subtotal</span>
-                        <span class="price">{{ number_format($totalAmount, 0, ',', '.') }}đ</span>
+                        <span>Subtotal:</span>
+                        <span class="price" id="selectedTotal">0đ</span>
                     </div>
                     <div class="total-item">
-                        <span>Total</span>
-                        <span class="price">{{ number_format($totalAmount, 0, ',', '.') }}đ</span>
+                        <span>Tax (10%):</span>
+                        <span class="price" id="tax">0đ</span>
                     </div>
-                    <a href="payment">Check Out</a>
+                    <div class="total-item">
+                        <span>Total:</span>
+                        <span class="price" id="total">0đ</span>
+                    </div>
+                    <h3>Selected Total</h3>
+                    <button type="submit" class="btn btn-primary" form="cart">Check Out</button>
                 </div>
             </div>
         </div>
     </div>
+
 
     <div class="features">
         <div class="container">
@@ -236,6 +258,7 @@
         document.querySelectorAll('.fa-trash').forEach(icon => {
             icon.addEventListener('click', function() {
                 const productId = this.dataset.productId;
+                const row = this.closest('tr'); // Hàng chứa sản phẩm
 
                 fetch(`cart/delete/${productId}`, {
                         method: 'DELETE',
@@ -247,17 +270,26 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            location.reload(); // Tải lại trang
+                            row.remove(); // Xóa hàng sản phẩm khỏi bảng
+                            updateTotals();
                         } else {
                             alert(data.message);
                         }
-                    });
+                    })
+                    .catch(error => console.error('Lỗi:', error));
             });
         });
+
         document.querySelectorAll('.form-control').forEach(input => {
             input.addEventListener('change', function() {
-                const productId = this.dataset.productId; // Thêm data-product-id vào input
-                const newQuantity = this.value;
+                const productId = this.dataset.productId;
+                const newQuantity = parseInt(this.value);
+
+                if (newQuantity < 1) {
+                    alert('Số lượng phải lớn hơn 0');
+                    this.value = 1;
+                    return;
+                }
 
                 fetch(`cart/update/${productId}`, {
                         method: 'POST',
@@ -273,12 +305,58 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            location.reload(); // Tải lại trang để cập nhật giỏ hàng
+                            const row = this.closest('tr');
+                            row.querySelector('td:nth-child(5)').innerText =
+                                `${new Intl.NumberFormat('vi-VN').format(data.new_subtotal)}đ`; // Cập nhật Subtotal
+                            updateTotals();
                         } else {
                             alert(data.message);
                         }
-                    });
+                    })
+                    .catch(error => console.error('Lỗi:', error));
             });
         });
+
+        //checkbox
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                updateTotals();
+                toggleButtonState();
+            });
+        });
+
+        // Hàm cập nhật tổng giá trị
+        function updateTotals() {
+            let selectedTotal = 0;
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkedBox => {
+                const row = checkedBox.closest('tr');
+                const price = row.querySelector('td:nth-child(5)').innerText; // Lấy giá trị ở cột Subtotal
+                selectedTotal += parseInt(price.replace(/[^\d]/g, '')); // Loại bỏ ký tự không phải số
+            });
+
+            const formattedTotal = new Intl.NumberFormat('vi-VN').format(selectedTotal);
+            const formattedTax = new Intl.NumberFormat('vi-VN').format(selectedTotal / 10);
+            const formattedFinalTotal = new Intl.NumberFormat('vi-VN').format(selectedTotal + selectedTotal / 10);
+
+            document.getElementById('selectedTotal').innerText = `${formattedTotal}đ`;
+            document.getElementById('tax').innerText = `${formattedTax}đ`;
+            document.getElementById('total').innerText = `${formattedFinalTotal}đ`;
+        }
+
+        // Hàm làm mờ nút button khi không có checkbox nào được chọn
+        function toggleButtonState() {
+            const button = document.querySelector('.cart-totals button');
+            const anyChecked = document.querySelectorAll('input[type="checkbox"]:checked').length > 0;
+            if (anyChecked) {
+                button.disabled = false;
+                button.style.opacity = 1; // Khi có checkbox được chọn, làm rõ nút
+            } else {
+                button.disabled = true;
+                button.style.opacity = 0.5; // Khi không có checkbox được chọn, làm mờ nút
+            }
+        }
+
+        // Khởi tạo trạng thái của nút khi trang được tải
+        toggleButtonState();
     </script>
 @endsection

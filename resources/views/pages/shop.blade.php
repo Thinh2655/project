@@ -307,10 +307,15 @@
                             Default
                         </button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">Popularity</a></li>
-                            <li><a class="dropdown-item" href="#">Newest</a></li>
-                            <li><a class="dropdown-item" href="#">Price: Low to High</a></li>
-                            <li><a class="dropdown-item" href="#">Price: High to Low</a></li>
+                            <li><a class="dropdown-item"
+                                    href="{{ route('pages.shop', array_merge(request()->query(), ['sort' => 'created_at'])) }}">Newest</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                    href="{{ route('pages.shop', array_merge(request()->query(), ['sale_price' => 'asc', 'sort' => 'sale_price'])) }}">Price:
+                                    Low to High</a></li>
+                            <li><a class="dropdown-item"
+                                    href="{{ route('pages.shop', array_merge(request()->query(), ['sale_price' => 'desc', 'sort' => 'sale_price'])) }}">Price:
+                                    High to Low</a></li>
                         </ul>
                     </div>
                 </div>
@@ -323,11 +328,26 @@
             <label for="categoryFilter" class="form-label">Category</label>
             <select class="form-select" id="categoryFilter">
                 <option value="">All</option>
-                <option value="electronics">Electronics</option>
-                <option value="clothing">Clothing</option>
+                <option value="11">Electronics</option>
+                <option value="2">Clothing</option>
+                <option value="3">Smartphone</option>
+            </select>
+            <label for="priceFilter" class="form-label">Price</label>
+            <select class="form-select" id="priceFilter">
+                <option value="">All</option>
+                <option value="0-100">0 - 100₫</option>
+                <option value="100-500">100 - 500₫</option>
+                <option value="500-1000">500 - 1000₫</option>
+            </select>
+            <label for="brandFilter" class="form-label">Brand</label>
+            <select class="form-select" id="brandFilter">
+                <option value="">All</option>
+                <option value="brand1">Brand 1</option>
+                <option value="brand2">Brand 2</option>
+                <option value="brand3">Brand 3</option>
             </select>
         </div>
-        <button class="btn btn-primary btn-sm">Apply Filters</button>
+        <button class="btn btn-primary btn-sm" id="applyFiltersButton">Apply Filters</button>
     </div>
     <div class="mb-5"></div>
     <div class="container">
@@ -522,5 +542,18 @@
                 alert('Trình duyệt của bạn không hỗ trợ chia sẻ');
             }
         }
+        //Filter
+        document.getElementById('applyFiltersButton').addEventListener('click', function() {
+            const category = document.getElementById('categoryFilter').value;
+            const price = document.getElementById('priceFilter').value;
+            const brand = document.getElementById('brandFilter').value;
+
+            const queryParams = new URLSearchParams(window.location.search);
+            if (category) queryParams.set('category', category);
+            if (price) queryParams.set('price', price);
+            if (brand) queryParams.set('brand', brand);
+
+            window.location.search = queryParams.toString();
+        });
     </script>
 @endsection

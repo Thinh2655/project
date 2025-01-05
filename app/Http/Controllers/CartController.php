@@ -29,10 +29,10 @@ class CartController extends Controller
                 'carts.id',
                 'products.id as product_id',
                 'products.name as product_name',
-                'products.price',
+                'products.sale_price',
                 'carts.quantity',
                 'products.image_url',
-                DB::raw('products.price * carts.quantity as total_price')
+                DB::raw('products.sale_price * carts.quantity as total_price')
             )
             ->get();
 
@@ -52,12 +52,29 @@ class CartController extends Controller
 
         $cartItem = Cart::find($id);
         if ($cartItem) {
+            // Cập nhật số lượng
             $cartItem->quantity = $request->quantity;
             $cartItem->save();
-            return response()->json(['success' => true, 'message' => 'Cập nhật thành công']);
+
+            // Tính toán subtotal mới
+            $newSubtotal = $cartItem->quantity * $cartItem->product->sale_price;
+
+            // Tính toán tổng tiền mới của giỏ hàng
+            $totalAmount = Cart::where('user_id', $cartItem->user_id)
+                ->join('products', 'carts.product_id', '=', 'products.id')
+                ->sum(DB::raw('products.sale_price * carts.quantity'));
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Cập nhật thành công',
+                'new_subtotal' => $newSubtotal,
+                'total' => $totalAmount,
+            ]);
         }
+
         return response()->json(['success' => false, 'message' => 'Sản phẩm không tồn tại']);
     }
+
 
 
     public function delete($id)

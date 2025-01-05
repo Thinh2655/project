@@ -104,13 +104,19 @@
         }
 
         .place-order-btn {
-            background-color: #fff;
+            display: block;
+            background-color: #E7C985;
             color: #222;
             font-weight: 600;
             font-size: 18px;
             padding: 10px 30px;
-            border: 1px solid #222;
-            margin-top: 20px;
+            border: none;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+        .place-order-btn:hover {
+            background-color: #F7D6A3;
         }
 
         .features {
@@ -152,107 +158,118 @@
         <h1>Checkout</h1>
         <p>Home <i class="fas fa-angle-right"></i> Checkout</p>
     </div>
+    <form action="payment" method="post">
+        @csrf
+        <div class="container checkout-form">
+            <div class="row">
+                @foreach ($users as $user)
+                    <div class="col-md-7">
+                        <h3>Billing details</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="firstName" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="firstName" value="{{ $user->name }}"
+                                    required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="lastName" class="form-label" required>Last Name</label>
+                                <input type="text" class="form-control" id="lastName">
+                            </div>
+                        </div>
+                        <label for="companyName" class="form-label">Company Name (Optional)</label>
+                        <input type="text" class="form-control" id="companyName">
+                        <label for="country" class="form-label">Country / Region</label>
+                        <select class="form-select" id="country">
+                            <option>Indonesia</option>
+                            <option>Malaysia</option>
+                            <option>Thailand</option>
+                            <option selected>Vietnam</option>
+                            <option>Philippines</option>
+                            <option>Singapore</option>
+                            <option>Myanmar</option>
+                            <option>Brunei</option>
+                            <option>Laos</option>
+                            <option>Cambodia</option>
+                        </select>
+                        <label for="townCity" class="form-label">Town / City</label>
+                        <input type="text" class="form-control" id="townCity">
+                        <label for="streetAddress" class="form-label">Street address</label>
+                        <input type="text" class="form-control" id="streetAddress"
+                            placeholder="House number and street name" value="{{ $user->address }}" required>
+                        <label for="province" class="form-label">Province</label>
+                        <select class="form-select" id="province">
+                            <option selected>Western Province</option>
+                            <option>Central Province</option>
+                            <option>Southern Province</option>
+                            <option>Northern Province</option>
+                            <option>Eastern Province</option>
+                        </select>
+                        <label for="zipCode" class="form-label">ZIP code</label>
+                        <input type="text" class="form-control" id="zipCode">
+                        <label for="phone" class="form-label">Phone</label>
+                        <input type="text" class="form-control" id="phone" value="{{ $user->phone_number }}"
+                            required>
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" class="form-control" id="email" placeholder="{{ $user->email }}" required
+                            readonly>
+                        <label for="additionalInfo" class="form-label">Additional information</label>
+                        <textarea class="form-control" id="additionalInfo" rows="3"
+                            placeholder="Notes about your order, e.g. special notes for delivery"></textarea>
+                    </div>
+                @endforeach
 
-    <div class="container checkout-form">
-        <div class="row">
-            <div class="col-md-7">
-                <h3>Billing details</h3>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label for="firstName" class="form-label">First Name</label>
-                        <input type="text" class="form-control" id="firstName" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="lastName" class="form-label" required>Last Name</label>
-                        <input type="text" class="form-control" id="lastName">
-                    </div>
-                </div>
-                <label for="companyName" class="form-label">Company Name (Optional)</label>
-                <input type="text" class="form-control" id="companyName">
-                <label for="country" class="form-label">Country / Region</label>
-                <select class="form-select" id="country">
-                    <option>Indonesia</option>
-                    <option>Malaysia</option>
-                    <option>Thailand</option>
-                    <option selected>Vietnam</option>
-                    <option>Philippines</option>
-                    <option>Singapore</option>
-                    <option>Myanmar</option>
-                    <option>Brunei</option>
-                    <option>Laos</option>
-                    <option>Cambodia</option>
-                </select>
-                <label for="streetAddress" class="form-label">Street address</label>
-                <input type="text" class="form-control" id="streetAddress" placeholder="House number and street name">
-                <input type="text" class="form-control" id="apartment"
-                    placeholder="Apartment, suite, unit etc. (optional)">
-                <label for="townCity" class="form-label">Town / City</label>
-                <input type="text" class="form-control" id="townCity">
-                <label for="province" class="form-label">Province</label>
-                <select class="form-select" id="province">
-                    <option selected>Western Province</option>
-                    <option>Central Province</option>
-                    <option>Southern Province</option>
-                    <option>Northern Province</option>
-                    <option>Eastern Province</option>
-                </select>
-                <label for="zipCode" class="form-label">ZIP code</label>
-                <input type="text" class="form-control" id="zipCode">
-                <label for="phone" class="form-label">Phone</label>
-                <input type="text" class="form-control" id="phone">
-                <label for="email" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="email">
-                <label for="additionalInfo" class="form-label">Additional information</label>
-                <textarea class="form-control" id="additionalInfo" rows="3"
-                    placeholder="Notes about your order, e.g. special notes for delivery"></textarea>
-            </div>
-            <div class="col-md-5">
-                <div class="product-summary">
-                    <h4>Product</h4>
-                    <div class="item">
-                        <span>Asgaard sofa <i class="fas fa-times"></i> 1</span>
-                        <span>25.000.000d</span>
-                    </div>
-                    <div class="item">
-                        <span>Subtotal</span>
-                        <span>25.000.000d</span>
-                    </div>
-                    <div class="total">
-                        <span>Total</span>
-                        <span>250.00.000d</span>
-                    </div>
-                    <div class="payment-methods">
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="directBankTransfer"
-                                checked>
-                            <label class="form-check-label" for="directBankTransfer">
-                                Direct Bank Transfer
-                            </label>
-                            <p>Make your payment directly into our bank account. Please use your Order ID as the payment
-                                reference. Your order will not be shipped until the funds have cleared in our account.</p>
+                <div class="col-md-5">
+                    <div class="product-summary">
+                        <h4>Product</h4>
+                        @foreach ($carts as $cart)
+                            <div class="item">
+                                <span>{{ $cart->product->name }} <i class="fas fa-times"></i> {{ $cart->quantity }}</span>
+                                <span>{{ number_format($cart->product->sale_price, 0, ',', '.') }}đ</span>
+                            </div>
+                        @endforeach
+                        <div class="item">
+                            <span>Subtotal</span>
+                            <input type="number" name="total_price" hidden value="{{ $total_price }}">
+                            <span>{{ number_format($total_price, 0, ',', '.') }}đ</span>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="directBankTransfer2">
-                            <label class="form-check-label" for="directBankTransfer2">
-                                Direct Bank Transfer
-                            </label>
+                        <div class="total">
+                            <span>Total</span>
+                            <span>{{ number_format($total_price, 0, ',', '.') }}đ</span>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" name="paymentMethod" id="cashOnDelivery">
-                            <label class="form-check-label" for="cashOnDelivery">
-                                Cash On Delivery
-                            </label>
+                        <div class="payment-methods">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="directBankTransfer"
+                                    checked>
+                                <label class="form-check-label" for="directBankTransfer">
+                                    Direct Bank Transfer
+                                </label>
+                                <p>Make your payment directly into our bank account. Please use your Order ID as the payment
+                                    reference. Your order will not be shipped until the funds have cleared in our account.
+                                </p>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod"
+                                    id="directBankTransfer2">
+                                <label class="form-check-label" for="directBankTransfer2">
+                                    Direct Bank Transfer
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="paymentMethod" id="cashOnDelivery">
+                                <label class="form-check-label" for="cashOnDelivery">
+                                    Cash On Delivery
+                                </label>
+                            </div>
+                            <p>Your personal data will be used to support your experience throughout this website, to manage
+                                access to your account, and for other purposes described in our <a href="#">privacy
+                                    policy.</a></p>
+                            <button class="place-order-btn">Place order</button>
                         </div>
-                        <p>Your personal data will be used to support your experience throughout this website, to manage
-                            access to your account, and for other purposes described in our <a href="#">privacy
-                                policy.</a></p>
-                        <button class="place-order-btn">Place order</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-
+    </form>
     <div class="features">
         <div class="container">
             <div class="row">

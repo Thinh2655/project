@@ -12,19 +12,39 @@ class ProductController extends Controller
     private function getProducts(Request $request, $view, $like = null)
     {
         $search = $request->search;
-        $perPage = $request->input('per_page', 2); // Số lượng mặc định là 2
+        $perPage = $request->input('per_page', 4); // Số lượng mặc định là 4
+        $sort = $request->input('sort', 'created_at'); // Sắp xếp mặc định theo thời gian
+        $sale_price = $request->input('sale_price', 'desc'); // Thứ tự mặc định là giảm dần
+        $categoryId = $request->input('category_id'); // Lấy category_id từ yêu cầu
 
         $query = Product::query();
 
+        // Nếu có tham số like, lọc theo like
         if (!is_null($like)) {
             $query->where('like', $like);
         }
 
+        // Nếu có category_id, lọc theo danh mục
+        if (!is_null($categoryId)) {
+            $query->where('category_id', $categoryId);
+        }
+
+        // Nếu có tham số tìm kiếm, lọc theo tên sản phẩm
         if ($search) {
             $query->where('name', 'like', "%$search%");
         }
 
+        // Sắp xếp theo trường sort, mặc định là created_at
+        if ($sort == 'sale_price') {
+            $query->orderBy('sale_price', $sale_price);  // Sắp xếp theo giá
+        } else {
+            $query->orderBy($sort, 'desc');  // Sắp xếp theo thời gian hoặc trường khác
+        }
+
+        // Lấy dữ liệu phân trang
         $products = $query->paginate($perPage);
+
+        // Trả về view với dữ liệu sản phẩm
         return view($view, compact('products'));
     }
 

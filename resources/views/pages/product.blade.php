@@ -237,6 +237,7 @@
         .color-gold {
             background-color: #c89f49;
         }
+
         .comment-card {
             border: 1px solid #eaeaea;
             border-radius: 5px;
@@ -297,7 +298,27 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-6">
-                        <img src="{{ $product->image_url }}" alt="Asgaard sofa" class="product-image">
+                        <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div class="carousel-item active">
+                                    <img src="https://placehold.co/80x80" class="d-block w-100 product-image" alt="Product Image 1">
+                                </div>
+                                <div class="carousel-item">
+                                    <img src="https://placehold.co/80x80" class="d-block w-100 product-image" alt="Product Image 2">
+                                </div>
+                                <!-- Thêm nhiều mục carousel nếu cần -->
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
                         <div class="thumbnail-images">
                             <img src="https://placehold.co/80x80" alt="Asgaard sofa thumbnail 1" class="thumbnail">
                             <img src="https://placehold.co/80x80" alt="Asgaard sofa thumbnail 2" class="thumbnail">

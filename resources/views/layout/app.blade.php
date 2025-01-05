@@ -151,10 +151,10 @@
                     <div class="navbar-icons">
                         @if (Auth::check())
                             <!-- Nếu người dùng đã đăng nhập -->
-                            <a href="/project/account"><i class="fas fa-user"></i></a>
+                            <a href="{{route('pages.account')}}"><i class="fas fa-user"></i></a>
                         @else
                             <!-- Nếu người dùng chưa đăng nhập -->
-                            <a href="/project/login"><i class="fas fa-user"></i></a>
+                            <a href="{{ route('pages.login') }}"><i class="fas fa-user"></i></a>
                         @endif
                         <!-- Nút bật tắt ô tìm kiếm -->
                         <a href="#" class="icon-button" id="search-button" onclick="toggleSearch()"><i
@@ -163,7 +163,7 @@
                         <input type="text" id="search-input" placeholder="Search..." style="display: none;"
                             name="search">
                         <a href="#"><i class="fas fa-heart"></i></a>
-                        <a href="/project/cart"><i class="fas fa-shopping-cart"></i></a>
+                        <a href="{{ route('pages.cart') }}"><i class="fas fa-shopping-cart"></i></a>
                     </div>
                 </div>
             </div>
