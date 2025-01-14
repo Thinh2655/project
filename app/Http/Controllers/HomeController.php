@@ -100,7 +100,7 @@ class HomeController extends Controller
                 'email' => $req->email,
                 'password' => Hash::make($req->password),
             ]);
-            return redirect()->back()->with('message', 'Đăng ký thành công');
+            return redirect('pages.home')->with('message', 'Đăng ký thành công');
         } catch (QueryException $e) {
             // Xử lý lỗi nếu có khi thực hiện insert
             return redirect()->back()->with('error', 'Đã có lỗi xảy ra');

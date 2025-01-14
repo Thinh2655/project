@@ -12,7 +12,7 @@ class ProductController extends Controller
     private function getProducts(Request $request, $view, $like = null)
     {
         $search = $request->search;
-        $perPage = $request->input('per_page', 4); // Số lượng mặc định là 4
+        $perPage = $request->input('per_page', 8); // Số lượng mặc định là 4
         $sort = $request->input('sort', 'created_at'); // Sắp xếp mặc định theo thời gian
         $sale_price = $request->input('sale_price', 'desc'); // Thứ tự mặc định là giảm dần
         $categoryId = $request->input('category_id'); // Lấy category_id từ yêu cầu
@@ -51,9 +51,39 @@ class ProductController extends Controller
     // Hiển thị chi tiết sản phẩm
     public function show($id)
     {
-        $product = DB::table('products')->where('id', $id)->get();
-        return view('pages.product', compact('product'));
+        // Lấy sản phẩm cùng với các review, user của review, reply và user của reply
+        $product = Product::with(['review.user', 'review.replies.user', 'review.replies'])->findOrFail($id);
+
+        // Tính tổng số review và reply
+        $totalReviews = $product->review->count();
+        $totalReplies = $product->review->sum(function ($review) {
+            return $review->replies->count();
+        });
+
+        // Tính tổng số review và reply
+        $totalReviewsAndReplies = $totalReviews + $totalReplies;
+
+        // Trả về view với dữ liệu sản phẩm, reviews, replies và tổng số review + reply
+        return view('pages.product', compact('product', 'totalReviewsAndReplies'));
     }
+
+    public function addreview($product, $review)
+    {
+        // Xử lý thêm review cho sản phẩm
+        $product = Product::findOrFail($product);
+
+        // Tạo review mới
+        $product->review()->create([
+            'user_id' => auth()->id(),
+            'content' => $review['content'],
+            'rating' => $review['rating'],
+        ]);
+
+        // Trả về phản hồi thành công
+        return response()->json(['message' => 'Review added successfully'], 200);
+    }
+
+
     public function adminShow($id)
     {
         $product = DB::table('products')->where('id', $id)->get();
@@ -76,11 +106,5 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         return $this->getProducts($request, 'pages.shop');
-    }
-
-    // Tìm kiếm sản phẩm cho admin
-    public function admin(Request $request)
-    {
-        return $this->getProducts($request, 'admin.products');
     }
 }

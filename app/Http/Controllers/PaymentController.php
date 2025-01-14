@@ -7,6 +7,8 @@ use App\Models\orders;
 use App\Models\order_items;
 use App\Models\Carts;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+
 
 class PaymentController extends Controller
 {
@@ -36,10 +38,10 @@ class PaymentController extends Controller
             }
         }
 
-        $users = User::all();
+        $user = Auth::user();
 
         // Trả về view với dữ liệu cần thiết
-        return view('pages.payment', compact('carts', 'total_price', 'users'));
+        return view('pages.payment', compact('carts', 'total_price', 'user'));
     }
 
     public function payment(Request $request)

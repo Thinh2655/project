@@ -8,6 +8,7 @@ use App\Models\order_items;
 use App\Models\Categories;
 use App\Models\Carts;
 use App\Models\orders;
+use App\Models\Reviews;
 
 class Products extends Model
 {
@@ -28,5 +29,9 @@ class Products extends Model
     public function order()
     {
         return $this->hasMany(orders::class);
+    }
+    public function review()
+    {
+        return $this->hasMany(Reviews::class,'product_id');
     }
 }

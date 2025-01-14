@@ -103,7 +103,6 @@
         }
 
         .card {
-            border: none;
             margin-bottom: 20px;
             background-color: #f4f5f7;
             position: relative;
@@ -111,7 +110,6 @@
 
         .card-img-top {
             width: 100%;
-            height: 200px;
             object-fit: cover;
             position: relative;
         }
@@ -367,8 +365,8 @@
                                 <span class="discount-badge">-30%</span>
                             </div>
                             <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">{{ $product->name }}</h5>
-                                <p class="card-text flex-grow-1">{{ $product->description }}</p>
+                                <h5 class="card-title">{{ \Illuminate\Support\Str::limit($product->name, 40) }}</h5>
+                                <p class="card-text flex-grow-1">{{ \Illuminate\Support\Str::limit($product->description, 70) }}</p>
                                 <div>
                                     <span class="price">{{ $product->sale_price }}₫</span>
                                     <span class="original-price">{{ $product->price }}₫</span>

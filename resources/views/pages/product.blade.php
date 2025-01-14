@@ -293,93 +293,93 @@
         }
     </style>
 
-    @foreach ($product as $product)
-        <section class="product-section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
-                            <div class="carousel-inner">
-                                <div class="carousel-item active">
-                                    <img src="https://placehold.co/80x80" class="d-block w-100 product-image" alt="Product Image 1">
-                                </div>
-                                <div class="carousel-item">
-                                    <img src="https://placehold.co/80x80" class="d-block w-100 product-image" alt="Product Image 2">
-                                </div>
-                                <!-- Thêm nhiều mục carousel nếu cần -->
+    <section class="product-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img src="https://placehold.co/80x80" class="d-block w-100 product-image"
+                                    alt="Product Image 1">
                             </div>
-                            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel"
-                                data-bs-slide="prev">
-                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Previous</span>
-                            </button>
-                            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel"
-                                data-bs-slide="next">
-                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                                <span class="visually-hidden">Next</span>
-                            </button>
+                            <div class="carousel-item">
+                                <img src="https://placehold.co/80x80" class="d-block w-100 product-image"
+                                    alt="Product Image 2">
+                            </div>
+                            <!-- Thêm nhiều mục carousel nếu cần -->
                         </div>
-                        <div class="thumbnail-images">
-                            <img src="https://placehold.co/80x80" alt="Asgaard sofa thumbnail 1" class="thumbnail">
-                            <img src="https://placehold.co/80x80" alt="Asgaard sofa thumbnail 2" class="thumbnail">
-                            <img src="https://placehold.co/80x80" alt="Asgaard sofa thumbnail 3" class="thumbnail">
-                            <img src="https://placehold.co/80x80" alt="Asgaard sofa thumbnail 4" class="thumbnail">
-                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#productCarousel"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
                     </div>
-                    <div class="col-md-6">
-                        <div class="product-details">
-                            <h1 class="product-title">{{ $product->name }}</h1>
-                            <p class="product-price">{{ $product->price }}₫</p>
-                            <div class="rating">
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <i class="fas fa-star"></i>
-                                <span>5 Customer Review</span>
+                    <div class="thumbnail-images">
+                        <img src="https://placehold.co/80x80" alt="Asgaard sofa thumbnail 1" class="thumbnail">
+                        <img src="https://placehold.co/80x80" alt="Asgaard sofa thumbnail 2" class="thumbnail">
+                        <img src="https://placehold.co/80x80" alt="Asgaard sofa thumbnail 3" class="thumbnail">
+                        <img src="https://placehold.co/80x80" alt="Asgaard sofa thumbnail 4" class="thumbnail">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="product-details">
+                        <h1 class="product-title">{{ $product->name }}</h1>
+                        <p class="product-price">{{ $product->price }}₫</p>
+                        <div class="rating">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <span>{{$totalReviewsAndReplies}} Customer Review</span>
+                        </div>
+                        <p>{{ $product->description }}</p>
+                        <div class="size-options">
+                            <p>Size</p>
+                            <button class="btn btn-outline-secondary active">L</button>
+                            <button class="btn btn-outline-secondary">XL</button>
+                            <button class="btn btn-outline-secondary">XS</button>
+                        </div>
+                        <div class="color-options">
+                            <p>Color</p>
+                            <div class="d-flex">
+                                <div class="color-circle color-purple"></div>
+                                <div class="color-circle color-black"></div>
+                                <div class="color-circle color-gold"></div>
                             </div>
-                            <p>{{ $product->description }}</p>
-                            <div class="size-options">
-                                <p>Size</p>
-                                <button class="btn btn-outline-secondary active">L</button>
-                                <button class="btn btn-outline-secondary">XL</button>
-                                <button class="btn btn-outline-secondary">XS</button>
-                            </div>
-                            <div class="color-options">
-                                <p>Color</p>
-                                <div class="d-flex">
-                                    <div class="color-circle color-purple"></div>
-                                    <div class="color-circle color-black"></div>
-                                    <div class="color-circle color-gold"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <button class="btn btn-outline-secondary"
-                                    onclick="document.querySelector('.quantity-input').value = parseInt(document.querySelector('.quantity-input').value, 10) - 1;">-</button>
-                                <input type="text" value="1" class="quantity-input" min="1"
-                                    oninput="validateInput(this)">
-                                <button class="btn btn-outline-secondary"
-                                    onclick="document.querySelector('.quantity-input').value = parseInt(document.querySelector('.quantity-input').value, 10) + 1;">+</button>
-                                <a href="../cart/add/{{ $product->id }}" class="btn btn-dark me-2">Add To Cart</a>
-                                <button class="btn btn-outline-dark">+ Compare</button>
-                            </div>
-                            <div class="product-info">
-                                <p>SKU: SS001</p>
-                                <p>Category: Sofas</p>
-                                <p>Tags: <a href="#">Sofa</a>, <a href="#">Chair</a>, <a
-                                        href="#">Home</a>, <a href="#">Shop</a></p>
-                                <p>Share:
-                                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                                    <a href="#"><i class="fab fa-twitter"></i></a>
-                                </p>
-                            </div>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-secondary"
+                                onclick="document.querySelector('.quantity-input').value = parseInt(document.querySelector('.quantity-input').value, 10) - 1;">-</button>
+                            <input type="text" value="1" class="quantity-input" min="1"
+                                oninput="validateInput(this)">
+                            <button class="btn btn-outline-secondary"
+                                onclick="document.querySelector('.quantity-input').value = parseInt(document.querySelector('.quantity-input').value, 10) + 1;">+</button>
+                            <a href="../cart/add/{{ $product->id }}" class="btn btn-dark me-2">Add To Cart</a>
+                            <button class="btn btn-outline-dark">+ Compare</button>
+                        </div>
+                        <div class="product-info">
+                            <p>SKU: SS001</p>
+                            <p>Category: Sofas</p>
+                            <p>Tags: <a href="#">Sofa</a>, <a href="#">Chair</a>, <a href="#">Home</a>, <a
+                                    href="#">Shop</a></p>
+                            <p>Share:
+                                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    @endforeach
+        </div>
+    </section>
 
     <section class="product-description">
         <div class="container">
@@ -467,30 +467,53 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Bình luận chính khác -->
+                        @foreach($product->review as $comment)
                         <div class="comment-card">
                             <div class="d-flex align-items-center">
                                 <img src="https://via.placeholder.com/40" class="avatar me-3" alt="User Avatar">
                                 <div>
-                                    <div class="comment-author">Vũ Văn C</div>
-                                    <small class="comment-date">3 ngày trước</small>
+                                    <div class="comment-author">{{$comment->user->name}}</div>
+                                    <small class="comment-date">{{$comment->created_at->diffForHumans()}}</small>
                                 </div>
                             </div>
                             <div class="comment-body">
-                                <p>Tôi có một số vấn đề với sản phẩm này.</p>
+                                <p>{{$comment->content}}</p>
                             </div>
                             <div>
                                 <button class="btn btn-link me-3" onclick="likeComment(this)">
                                     <i class="fas fa-heart"></i>
-                                    <span class="like-count">0</span>
+                                    <span class="like-count">{{$comment->likes_count}}</span>
                                 </button>
                                 <button class="btn btn-link" onclick="replyComment(this)">Trả lời</button>
-                            </div>
-                            <div class="replies mt-3">
-                                <!-- Các phản hồi sẽ được thêm vào đây -->
+                                <div class="replies mt-3">
+                                     <!-- Các phản hồi s�� được thêm vào đây -->
+                                    @foreach($comment->replies as $reply)
+                                    <div class="reply-card">
+                                        <div class="d-flex align-items-center">
+                                            <img src="https://via.placeholder.com/40" class="avatar me-3" alt="User Avatar">
+                                            <div>
+                                                <div class="comment-author">{{$reply->user->name}}</div>
+                                                <small class="comment-date">{{$reply->created_at->diffForHumans()}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="comment-body">
+                                            <p>{{$reply->content}}</p>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
+                        @endforeach
+                        <!-- Bình luận chính khác -->
+                    </div>
+                    <!-- Thêm input bình luận -->
+                    <div class="add-comment mt-5">
+                        <h5>Thêm bình luận</h5>
+                        <div class="mb-3">
+                            <textarea class="form-control" id="comment-input" rows="3" placeholder="Nhập bình luận của bạn..."></textarea>
+                        </div>
+                        <button class="btn btn-primary" onclick="submitComment()">Gửi bình luận</button>
                     </div>
                 </div>
             </div>
@@ -640,6 +663,41 @@
 
             commentCard.appendChild(replyInput);
             commentCard.appendChild(submitButton);
+        }
+
+        function submitComment() {
+            const commentInput = document.getElementById('comment-input');
+            const commentText = commentInput.value.trim();
+            if (commentText) {
+                // Tạo một bình luận mới
+                const newComment = document.createElement('div');
+                newComment.className = 'comment-card';
+                newComment.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <img src="https://via.placeholder.com/40" class="avatar me-3" alt="User Avatar">
+                        <div>
+                            <div class="comment-author">You</div>
+                            <small class="comment-date">Vừa xong</small>
+                        </div>
+                    </div>
+                    <div class="comment-body">
+                        <p>${commentText}</p>
+                    </div>
+                    <div>
+                        <button class="btn btn-link me-3" onclick="likeComment(this)">
+                            <i class="fas fa-heart"></i>
+                            <span class="like-count">0</span>
+                        </button>
+                        <button class="btn btn-link" onclick="replyComment(this)">Trả lời</button>
+                    </div>
+                    <div class="replies mt-3">
+                        <!-- Các phản hồi sẽ được thêm vào đây -->
+                    </div>
+                `;
+                addComment = document.querySelector('.tab-pane.active#reviews > div')
+                addComment.appendChild(newComment);
+                test = document.getElementById('comment-input').value = '';
+            }
         }
     </script>
 @endsection

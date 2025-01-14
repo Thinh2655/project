@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Auth;
 /*
 |--------------------------------------------------------------------------
@@ -50,26 +51,22 @@ Route::delete('/cart/delete/{id}', [CartController::class, 'delete'])->name('car
 Route::get('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 
 Route::get('product/{id}', [ProductController::class, 'show'])->name('product.show');
+Route::post('product/{id}/reviews', [ProductController::class,'addreview'])->name('product.addreview');
 
 Route::get('shop', [ProductController::class, 'search'])->name('pages.shop');
 
 Route::get('account', [HomeController::class, 'account'])->name('pages.account');
 Route::post('account', [HomeController::class, 'update'])->name('account.update');
 
-Route::get('admin', function () {
-    return view('admin.dashboard');
-});
-Route::get('admin/dashboard', function () {
-    return view('admin.dashboard');
-});
+Route::get('admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::get('admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+Route::get('admin/customers', [AdminController::class, 'customers'])->name('admin.customers');
+
 Route::get('admin/login', function () {
     return view('admin.login');
 });
 Route::get('admin/register', function () {
     return view('admin.register');
-});
-Route::get('admin/customers', function () {
-    return view('admin.customers');
 });
 Route::get('admin/customer', function () {
     return view('admin.customer');

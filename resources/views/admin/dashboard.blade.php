@@ -93,13 +93,14 @@
                             </div>
                             <div>
                                 <h5 class="card-title">Total Sales</h5>
-                                <p class="card-text">$25,024</p>
+                                <p class="card-text">{{ $totalProductsSold }}</p>
                                 <p class="card-text"><small class="text-muted">Last 24 Hours</small></p>
                             </div>
                         </div>
                         <div class="progress">
-                            <div class="progress-bar bg-purple" role="progressbar" style="width: 80%;" aria-valuenow="80"
-                                aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-warning" role="progressbar"
+                                style="width: {{ $totalProductsSoldPercent }}%;" aria-valuenow="" aria-valuemin="0"
+                                aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -113,13 +114,13 @@
                             </div>
                             <div>
                                 <h5 class="card-title">New Orders</h5>
-                                <p class="card-text">1,234</p>
+                                <p class="card-text">{{ number_format($orderCount, 0, ',', '.') }}</p>
                                 <p class="card-text"><small class="text-muted">Last 24 Hours</small></p>
                             </div>
                         </div>
                         <div class="progress">
-                            <div class="progress-bar bg-purple" role="progressbar" style="width: 70%;" aria-valuenow="70"
-                                aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-purple" role="progressbar" style="width: {{ $orderCountPercent }}%;"
+                                aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -133,13 +134,14 @@
                             </div>
                             <div>
                                 <h5 class="card-title">Revenue</h5>
-                                <p class="card-text">$12,345</p>
+                                <p class="card-text">{{ number_format($totalOrderAmount, 0, ',', '.') }}đ</p>
                                 <p class="card-text"><small class="text-muted">Last 24 Hours</small></p>
                             </div>
                         </div>
                         <div class="progress">
-                            <div class="progress-bar bg-green" role="progressbar" style="width: 85%;" aria-valuenow="85"
-                                aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-green" role="progressbar"
+                                style="width: {{ $totalOrderAmountPercent }}%;" aria-valuenow="85" aria-valuemin="0"
+                                aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -153,13 +155,13 @@
                             </div>
                             <div>
                                 <h5 class="card-title">New Users</h5>
-                                <p class="card-text">567</p>
+                                <p class="card-text">{{ $newUserCount }}</p>
                                 <p class="card-text"><small class="text-muted">Last 24 Hours</small></p>
                             </div>
                         </div>
                         <div class="progress">
-                            <div class="progress-bar bg-red" role="progressbar" style="width: 60%;" aria-valuenow="60"
-                                aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-red" role="progressbar" style="width: {{ $newUserCountPercent }}%;"
+                                aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
                     </div>
                 </div>
@@ -170,7 +172,7 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Product Name</th>
+                        <th>User Name</th>
                         <th>Product Number</th>
                         <th>Payments</th>
                         <th>Status</th>
@@ -178,27 +180,23 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>Mini USB</td>
-                        <td>4563</td>
-                        <td>Due</td>
-                        <td><span style="color: purple">Pending</span></td>
-                        <td><a href="#">Details</a></td>
-                    </tr>
-                    <tr>
-                        <td>Mini USB</td>
-                        <td>4563</td>
-                        <td>Due</td>
-                        <td><span style="color: purple">Pending</span></td>
-                        <td><a href="#">Details</a></td>
-                    </tr>
-                    <tr>
-                        <td>Mini USB</td>
-                        <td>4563</td>
-                        <td>Due</td>
-                        <td><span style="color: purple">Pending</span></td>
-                        <td><a href="#">Details</a></td>
-                    </tr>
+                    @foreach ($top3RecentOrders as $order)
+                        <tr>
+                            <td>{{ $order->user->name }}</td>
+                            <td>{{ $order->orderItems->sum('quantity') }}</td>
+                            <td>{{ number_format($order->total_price, 0, ',', '.') }}đ</td>
+                            <td>
+                                @if ($order->status == 'complete')
+                                    <span class="badge bg-success">{{ $order->status }}</span>
+                                @elseif ($order->status == 'pending')
+                                    <span class="badge bg-warning">{{ $order->status }}</span>
+                                @else
+                                    <span class="badge bg-danger">{{ $order->status }}</span>
+                                @endif
+                            </td>
+                            <td><a href="#">Details</a></td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
