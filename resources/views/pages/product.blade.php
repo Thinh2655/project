@@ -337,7 +337,7 @@
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
                             <i class="fas fa-star"></i>
-                            <span>{{$totalReviewsAndReplies}} Customer Review</span>
+                            <span>{{ $totalReviewsAndReplies }} Customer Review</span>
                         </div>
                         <p>{{ $product->description }}</p>
                         <div class="size-options">
@@ -421,90 +421,50 @@
                     <div class="container mt-5">
                         <h4 class="mb-4">Đánh giá sản phẩm</h4>
                         <!-- Bình luận chính -->
-                        <div class="comment-card">
-                            <div class="d-flex align-items-center">
-                                <img src="https://via.placeholder.com/40" class="avatar me-3" alt="User Avatar">
-                                <div>
-                                    <div class="comment-author">Nguyễn Văn A</div>
-                                    <small class="comment-date">2 ngày trước</small>
-                                </div>
-                            </div>
-                            <div class="comment-body">
-                                <p>Sản phẩm rất tốt, tôi rất hài lòng!</p>
-                            </div>
-                            <div>
-                                <button class="btn btn-link me-3" onclick="likeComment(this)">
-                                    <i class="fas fa-heart"></i>
-                                    <span class="like-count">0</span>
-                                </button>
-                                <button class="btn btn-link" onclick="replyComment(this)">Trả lời</button>
-                            </div>
-                            <div class="replies mt-3">
-                                <!-- Các phản hồi sẽ được thêm vào đây -->
-                                <div class="reply-card">
+                        @if ($product->review->isNotEmpty())
+                            @foreach ($product->review as $comment)
+                                <div class="comment-card" data-comment-id="{{ $comment->id }}">
                                     <div class="d-flex align-items-center">
-                                        <img src="https://via.placeholder.com/40" class="avatar me-3" alt="User Avatar">
+                                        <img src="https://placehold.co/400x200" class="avatar me-3" alt="User Avatar">
                                         <div>
-                                            <div class="comment-author">Trần Thị B</div>
-                                            <small class="comment-date">1 ngày trước</small>
+                                            <div class="comment-author">{{ $comment->user->name }}</div>
+                                            <small class="comment-date">{{ $comment->created_at->diffForHumans() }}</small>
                                         </div>
                                     </div>
                                     <div class="comment-body">
-                                        <p>Tôi cũng nghĩ vậy. Đây là một sản phẩm tuyệt vời!</p>
+                                        <p>{{ $comment->content }}</p>
                                     </div>
-                                </div>
-                                <div class="reply-card">
-                                    <div class="d-flex align-items-center">
-                                        <img src="https://via.placeholder.com/40" class="avatar me-3" alt="User Avatar">
-                                        <div>
-                                            <div class="comment-author">Lê Anh C</div>
-                                            <small class="comment-date">1 ngày trước</small>
+                                    <div>
+                                        <button class="btn btn-link me-3" onclick="likeComment(this)">
+                                            <i class="fas fa-heart"></i>
+                                            <span class="like-count">{{ $comment->likes_count }}</span>
+                                        </button>
+                                        <button class="btn btn-link" onclick="replyComment(this)">Trả lời</button>
+                                        <div class="replies mt-3">
+                                            <!-- Các phản hồi s�� được thêm vào đây -->
+                                            @foreach ($comment->replies as $reply)
+                                                <div class="reply-card">
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="https://placehold.co/400x200" class="avatar me-3"
+                                                            alt="User Avatar">
+                                                        <div>
+                                                            <div class="comment-author">{{ $reply->user->name }}</div>
+                                                            <small
+                                                                class="comment-date">{{ $reply->created_at->diffForHumans() }}</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="comment-body">
+                                                        <p>{{ $reply->content }}</p>
+                                                    </div>
+                                                </div>
+                                            @endforeach
                                         </div>
                                     </div>
-                                    <div class="comment-body">
-                                        <p>Thật đáng kinh ngạc!</p>
-                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                        @foreach($product->review as $comment)
-                        <div class="comment-card">
-                            <div class="d-flex align-items-center">
-                                <img src="https://via.placeholder.com/40" class="avatar me-3" alt="User Avatar">
-                                <div>
-                                    <div class="comment-author">{{$comment->user->name}}</div>
-                                    <small class="comment-date">{{$comment->created_at->diffForHumans()}}</small>
-                                </div>
-                            </div>
-                            <div class="comment-body">
-                                <p>{{$comment->content}}</p>
-                            </div>
-                            <div>
-                                <button class="btn btn-link me-3" onclick="likeComment(this)">
-                                    <i class="fas fa-heart"></i>
-                                    <span class="like-count">{{$comment->likes_count}}</span>
-                                </button>
-                                <button class="btn btn-link" onclick="replyComment(this)">Trả lời</button>
-                                <div class="replies mt-3">
-                                     <!-- Các phản hồi s�� được thêm vào đây -->
-                                    @foreach($comment->replies as $reply)
-                                    <div class="reply-card">
-                                        <div class="d-flex align-items-center">
-                                            <img src="https://via.placeholder.com/40" class="avatar me-3" alt="User Avatar">
-                                            <div>
-                                                <div class="comment-author">{{$reply->user->name}}</div>
-                                                <small class="comment-date">{{$reply->created_at->diffForHumans()}}</small>
-                                            </div>
-                                        </div>
-                                        <div class="comment-body">
-                                            <p>{{$reply->content}}</p>
-                                        </div>
-                                    </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
+                            @endforeach
+                        @else
+                            <p>Chưa có bình luận nào.</p>
+                        @endif
                         <!-- Bình luận chính khác -->
                     </div>
                     <!-- Thêm input bình luận -->
@@ -583,7 +543,7 @@
                 </div>
             </div>
             <div class="text-center mt-4">
-                <button class="show-more-btn">Show More</button>
+                <a href="{{ route('pages.shop') }}" class="btn show-more-btn">Show More</a>
             </div>
         </div>
     </section>
@@ -636,28 +596,51 @@
             submitButton.onclick = function() {
                 const replyText = replyInput.value.trim();
                 if (replyText) {
-                    // Tạo một phản hồi mới
-                    const newReply = document.createElement('div');
-                    newReply.className = 'reply-card';
-                    newReply.innerHTML = `
-                        <div class="d-flex align-items-center">
-                            <img src="https://via.placeholder.com/40" class="avatar me-3" alt="User Avatar">
-                            <div>
-                                <div class="comment-author">You</div>
-                                <small class="comment-date">Vừa xong</small>
-                            </div>
-                        </div>
-                        <div class="comment-body">
-                            <p>${replyText}</p>
-                        </div>
-                    `;
+                    fetch('reviews/replies', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                    'content')
+                            },
+                            body: JSON.stringify({
+                                review_id: commentCard.dataset.commentId,
+                                content: replyText
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Tạo một phản hồi mới
+                                const newReply = document.createElement('div');
+                                newReply.className = 'reply-card';
+                                newReply.innerHTML = `
+                                                <div class="d-flex align-items-center">
+                                                    <img src="https://placehold.co/400x200" class="avatar me-3" alt="User Avatar">
+                                                    <div>
+                                                    <div class="comment-author">You</div>
+                                                    <small class="comment-date">Vừa xong</small>
+                                                    </div>
+                                                </div>
+                                                <div class="comment-body">
+                                                    <p>${replyText}</p>
+                                                </div>
+                                                `;
 
-                    // Thêm phản hồi mới vào danh sách
-                    commentCard.querySelector('.replies').appendChild(newReply);
+                                // Thêm phản hồi mới vào danh sách
+                                commentCard.querySelector('.replies').appendChild(newReply);
 
-                    // Xóa ô nhập liệu
-                    replyInput.remove();
-                    submitButton.remove();
+                                // Xóa ô nhập liệu
+                                replyInput.remove();
+                                submitButton.remove();
+                            } else {
+                                alert(data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Có lỗi xảy ra, vui lòng thử lại.');
+                        });
                 }
             };
 
@@ -669,34 +652,73 @@
             const commentInput = document.getElementById('comment-input');
             const commentText = commentInput.value.trim();
             if (commentText) {
-                // Tạo một bình luận mới
-                const newComment = document.createElement('div');
-                newComment.className = 'comment-card';
-                newComment.innerHTML = `
-                    <div class="d-flex align-items-center">
-                        <img src="https://via.placeholder.com/40" class="avatar me-3" alt="User Avatar">
-                        <div>
-                            <div class="comment-author">You</div>
-                            <small class="comment-date">Vừa xong</small>
-                        </div>
-                    </div>
-                    <div class="comment-body">
-                        <p>${commentText}</p>
-                    </div>
-                    <div>
-                        <button class="btn btn-link me-3" onclick="likeComment(this)">
-                            <i class="fas fa-heart"></i>
-                            <span class="like-count">0</span>
-                        </button>
-                        <button class="btn btn-link" onclick="replyComment(this)">Trả lời</button>
-                    </div>
-                    <div class="replies mt-3">
-                        <!-- Các phản hồi sẽ được thêm vào đây -->
-                    </div>
-                `;
-                addComment = document.querySelector('.tab-pane.active#reviews > div')
-                addComment.appendChild(newComment);
-                test = document.getElementById('comment-input').value = '';
+
+                // gửi request lên server
+                fetch({{ $product->id }} + '/reviews', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({
+                            product_id: {{ $product->id }},
+                            content: commentText
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Lấy nội dung bình luận từ input
+                            const commentText = document.getElementById('comment-input').value;
+
+                            // Tạo một bình luận mới
+                            const newComment = document.createElement('div');
+                            newComment.className = 'comment-card';
+                            newComment.dataset.commentId = data.commentId; 
+                            newComment.innerHTML = `
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="https://placehold.co/400x200" class="avatar me-3" alt="User Avatar">
+                                                        <div>
+                                                            <div class="comment-author">${data.username}</div>
+                                                            <small class="comment-date">Vừa xong</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="comment-body">
+                                                        <p>${commentText}</p>
+                                                    </div>
+                                                    <div>
+                                                        <button class="btn btn-link me-3" onclick="likeComment(this)">
+                                                            <i class="fas fa-heart"></i>
+                                                            <span class="like-count">0</span>
+                                                        </button>
+                                                        <button class="btn btn-link" onclick="replyComment(this)">Trả lời</button>
+                                                    </div>
+                                                    <div class="replies mt-3"></div>
+                                                `;
+
+                            // Tìm phần tử nơi sẽ thêm bình luận mới
+                            const addComment = document.querySelector('.tab-pane.active#reviews > div');
+                            if (addComment) {
+                                addComment.appendChild(newComment);
+                            } else {
+                                console.error('Không tìm thấy phần tử chứa bình luận');
+                            }
+
+                            // Xóa nội dung trong input
+                            const commentInput = document.getElementById('comment-input');
+                            if (commentInput) {
+                                commentInput.value = '';
+                            } else {
+                                console.error('Không tìm thấy phần tử input');
+                            }
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Có lỗi xảy ra, vui lòng thử lại.');
+                    });
             }
         }
     </script>

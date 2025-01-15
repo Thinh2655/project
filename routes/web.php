@@ -52,6 +52,7 @@ Route::get('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
 
 Route::get('product/{id}', [ProductController::class, 'show'])->name('product.show');
 Route::post('product/{id}/reviews', [ProductController::class,'addreview'])->name('product.addreview');
+Route::post('product/reviews/replies', [ProductController::class, 'addreplies'])->name('product.addreply');
 
 Route::get('shop', [ProductController::class, 'search'])->name('pages.shop');
 

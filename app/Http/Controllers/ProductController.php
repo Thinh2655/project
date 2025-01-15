@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Products as Product;
+use App\Models\Reviews;
 
 class ProductController extends Controller
 {
@@ -67,20 +68,62 @@ class ProductController extends Controller
         return view('pages.product', compact('product', 'totalReviewsAndReplies'));
     }
 
-    public function addreview($product, $review)
+    public function addreview(Request $request)
     {
+        $id = $request->product_id;
+
+        // Kiểm tra người dùng đã đăng nhập
+        if (!auth()->check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not authenticated'
+            ]);
+        }
+
         // Xử lý thêm review cho sản phẩm
-        $product = Product::findOrFail($product);
+        $product = Product::findOrFail($id);
 
         // Tạo review mới
-        $product->review()->create([
+        $review = $product->review()->create([
             'user_id' => auth()->id(),
-            'content' => $review['content'],
-            'rating' => $review['rating'],
+            'content' => $request->content,
+            'rating' => 5,
         ]);
 
         // Trả về phản hồi thành công
-        return response()->json(['message' => 'Review added successfully'], 200);
+        return response()->json([
+            'success' => true,
+            'username' => auth()->user()->name,
+            'commentId' => $review->id,
+            'message' => 'Review added successfully'
+        ], 200);
+    }
+
+    public function addreplies(Request $request)
+    {
+        $reviewId = $request->review_id;
+
+        // Kiểm tra người dùng đã đăng nhập
+        if (!auth()->check()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not authenticated'
+            ]);
+        }
+
+        // Xử lý thêm reply cho review
+        $review = Reviews::findOrFail($reviewId);
+        $review->replies()->create([
+            'user_id' => auth()->id(),
+            'content' => $request->content,
+        ]);
+
+        // Trả về phản hồi thành công
+        return response()->json([
+            'success' => true,
+            'username' => auth()->user()->name,
+            'message' => 'Reply added successfully'
+        ], 200);
     }
 
 
